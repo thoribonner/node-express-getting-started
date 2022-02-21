@@ -28,6 +28,6 @@ const sayHello = (req, res, next) => {
 
 // app.use(logging);
 app.use(morgan('dev'))
-app.use(sayHello);
+app.use('/hello', sayHello);
 
 module.exports = app;

@@ -38,6 +38,15 @@ const app = express();
 //   })
 
 // }
+// * router-level middleware
+
+const checkForAbbreviationLength = (req, res, next) => {
+  req.params.abbreviation.length !== 2
+    ? next(`State abbreviation ${req.params.abbreviation} is invalid.`)
+    : next();
+};
+
+// * routes
 
 app.use((req, res, next) => {
   console.log("A request is being made");
@@ -64,19 +73,22 @@ app.get("/say/:greeting", (req, res) => {
   res.send(content);
 });
 
-app.get("/states/:abbreviation", (req, res, next) => {
-  const abbreviation = req.params.abbreviation;
-  abbreviation.length !== 2
-    ? next("State abbreviation is invalid.")
-    : res.send(`${abbreviation} is a nice state, I'd like to visit.`);
+app.get("/states/:abbreviation", checkForAbbreviationLength, (req, res) => {
+  res.send(`${req.params.abbreviation} is a nice state, I'd like to visit.`);
 });
+
+app.get("/travel/:abbreviation", checkForAbbreviationLength, (req, res) => {
+  res.send(`Enjoy your trip to ${req.params.abbreviation}!`);
+});
+
+// * error handling
 
 app.use((req, res) => {
   res.send(`The route ${req.path} does not exist!`);
 });
 
 app.use((err, req, res, next) => {
-  console.error('an error occurred:',err);
+  console.error("an error occurred:", err);
   res.send(err);
 });
 

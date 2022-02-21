@@ -76,7 +76,7 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  console.error(err);
+  console.error('an error occurred:',err);
   res.send(err);
 });
 

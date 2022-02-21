@@ -1,5 +1,5 @@
-const express = require('express');
-const morgan = require('morgan');
+const express = require("express");
+const morgan = require("morgan");
 
 const app = express();
 
@@ -8,26 +8,56 @@ const app = express();
 // * next = tells express that this middleware function is complete
 
 // * sayHello sends response
-const sayHello = (req, res, next) => {
-  res.send('Hello!');
-}
+// const sayHello = (req, res, next) => {
+//   console.log(req.query);
+//   const name = req.query.name;
+//   const content = name ? `hello, ${name}!` : "Hello!";
+//   res.send(content);
+// };
 
+// const saySomething = (req, res) => {
+//   const greeting = req.params.greeting;
+//   const name = req.query.name;
+//   const content = greeting && name ? `${greeting} ${name}!` : `${greeting}!`;
+//   res.send(content);
+// };
 
-// // * logging tells express this function is complete
+// const sayGoodbye = (req, res) => {
+//   res.send("Sorry to see you go!");
+// };
+
+// * logging tells express this function is complete
 // const logging = (req, res, next) => {
 //   console.log("A request is being made");
 //   next();
-// }
+// };
 
 // const log = (req, res, next) => {
 //   fs.appendFile("log.txt", [date] - {Request Made}\n, (err) => {
 //       // do nothing
 //   })
-  
+
 // }
 
-// app.use(logging);
-app.use(morgan('dev'))
-app.use('/hello', sayHello);
+app.use((req, res, next) => {
+  console.log("A request is being made");
+  next();
+});
+app.use(morgan("dev"));
+app.use("/hello", (req, res) => {
+  console.log(req.query);
+  const name = req.query.name;
+  const content = name ? `hello, ${name}!` : "Hello!";
+  res.send(content);
+});
+app.get("/say/goodbye", (req, res) => {
+  res.send("Sorry to see you go!");
+});
+app.get("/say/:greeting", (req, res) => {
+  const greeting = req.params.greeting;
+  const name = req.query.name;
+  const content = greeting && name ? `${greeting} ${name}!` : `${greeting}!`;
+  res.send(content);
+});
 
 module.exports = app;
